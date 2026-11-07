@@ -1,0 +1,14 @@
+{
+  "tooltip.age_of_element_statue.boss_statue.bind": "手持刷怪蛋右键可绑定",
+  "tooltip.age_of_element_statue.boss_statue.glory": "见证我的荣耀！",
+  "tooltip.age_of_element_statue.boss_statue.empty": "尚未绑定 Boss",
+  "tooltip.age_of_element_statue.creature_statue.empty": "尚未记录生物",
+  "tooltip.age_of_element_statue.creature_statue.bind": "潜行右键生物即可记录成它的雕像",
+  "block.age_of_element_statue.creature_statue": "生物雕像",
+  "item.age_of_element_statue.creature_statue": "生物雕像",
+  "block.age_of_element_statue.boss_statue": "Boss 雕像",
+  "itemGroup.age_of_element_statue.statues": "雕像",
+  "tooltip.age_of_element_statue.iron_scale": "铁锭右键：变大　潜行右键：变小",
+  "tooltip.age_of_element_statue.gold_height": "金锭右键：升高　潜行右键：降低",
+  "tooltip.age_of_element_statue.base_cycle": "手持方块右键：切换底座贴图（上半段 → 下半段 → 还原）"
+}

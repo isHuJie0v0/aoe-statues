@@ -1,0 +1,14 @@
+{
+  "tooltip.age_of_element_statue.boss_statue.bind": "Right-click with a spawn egg to bind",
+  "tooltip.age_of_element_statue.boss_statue.glory": "Witness my glory!",
+  "tooltip.age_of_element_statue.boss_statue.empty": "No boss bound",
+  "tooltip.age_of_element_statue.creature_statue.empty": "No creature recorded",
+  "tooltip.age_of_element_statue.creature_statue.bind": "Sneak + right-click a mob to record it",
+  "block.age_of_element_statue.creature_statue": "Creature Statue",
+  "item.age_of_element_statue.creature_statue": "Creature Statue",
+  "block.age_of_element_statue.boss_statue": "Boss Statue",
+  "itemGroup.age_of_element_statue.statues": "Statues",
+  "tooltip.age_of_element_statue.iron_scale": "Iron Ingot: right-click to enlarge, sneak + right-click to shrink",
+  "tooltip.age_of_element_statue.gold_height": "Gold Ingot: right-click to raise, sneak + right-click to lower",
+  "tooltip.age_of_element_statue.base_cycle": "Hold a block + right-click: cycle base texture (upper half -> lower half -> default)"
+}

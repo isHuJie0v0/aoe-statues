@@ -1,0 +1,68 @@
+// AoE Statues —— 雕像独立附加模组（2026-11-06 用户：「把雕像部分在开发区单独做个 jar」）
+// 结构照抄 age-of-element（同一套离线构建验证）。
+plugins {
+    id 'eclipse'
+    id 'idea'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+}
+
+version = "${mod_version}"
+group = "${mod_group}"
+
+base {
+    archivesName = "${mod_id}"
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+minecraft {
+    mappings channel: "${mappings_channel}", version: "${mappings_version}"
+}
+
+repositories {
+    maven {
+        name = 'LocalOffline'
+        url = uri('file:///D:/modpack/.tools/maven-repo')
+    }
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    // JEI 只做「按 NBT 区分子类型」，缺了也不崩
+    compileOnly fg.deobf(files('../age-of-element/libs/jei-1.20.1-forge-15.20.0.112.jar'))
+}
+
+tasks.named('processResources', ProcessResources).configure {
+    var replaceProperties = [
+            minecraft_version: minecraft_version, minecraft_version_range: '[1.20.1,1.21)',
+            forge_version: forge_version, forge_version_range: '[47,)',
+            loader_version_range: '[47,)',
+            mod_id: mod_id, mod_name: mod_name, mod_license: 'All Rights Reserved',
+            mod_version: mod_version, mod_authors: mod_authors, mod_description: mod_description
+    ]
+    inputs.properties replaceProperties
+    filteringCharset = 'UTF-8'
+    filesMatching(['META-INF/mods.toml']) {
+        expand replaceProperties
+    }
+}
+
+jar {
+    manifest {
+        attributes([
+                'Specification-Title'     : mod_id,
+                'Specification-Vendor'    : mod_authors,
+                'Specification-Version'   : '1',
+                'Implementation-Title'    : project.name,
+                'Implementation-Version'  : project.jar.archiveVersion,
+                'Implementation-Vendor'   : mod_authors
+        ])
+    }
+}
+
+// 产出可部署的 SRG 映射 jar（official 映射的中间产物不可部署 —— 不跑 reobf 进游戏就是 NoSuchFieldError）
+jar.finalizedBy('reobfJar')
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}

@@ -1,0 +1,40 @@
+{
+  "variants": {
+    "base=0,facing=north": {
+      "model": "age_of_element_statue:block/boss_statue"
+    },
+    "base=1,facing=north": {
+      "model": "age_of_element_statue:block/boss_statue"
+    },
+    "base=2,facing=north": {
+      "model": "age_of_element_statue:block/boss_statue"
+    },
+    "base=0,facing=east": {
+      "model": "age_of_element_statue:block/boss_statue"
+    },
+    "base=1,facing=east": {
+      "model": "age_of_element_statue:block/boss_statue"
+    },
+    "base=2,facing=east": {
+      "model": "age_of_element_statue:block/boss_statue"
+    },
+    "base=0,facing=south": {
+      "model": "age_of_element_statue:block/boss_statue"
+    },
+    "base=1,facing=south": {
+      "model": "age_of_element_statue:block/boss_statue"
+    },
+    "base=2,facing=south": {
+      "model": "age_of_element_statue:block/boss_statue"
+    },
+    "base=0,facing=west": {
+      "model": "age_of_element_statue:block/boss_statue"
+    },
+    "base=1,facing=west": {
+      "model": "age_of_element_statue:block/boss_statue"
+    },
+    "base=2,facing=west": {
+      "model": "age_of_element_statue:block/boss_statue"
+    }
+  }
+}

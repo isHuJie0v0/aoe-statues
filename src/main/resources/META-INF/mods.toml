@@ -1,0 +1,49 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="All Rights Reserved"
+issueTrackerURL="https://github.com/isHuJie0v0/aoe-statues/issues"
+
+[[mods]]
+modId="age_of_element_statue"
+version="${mod_version}"
+displayName="AoE Statues"
+logoFile="logo.png"
+authors="Hu_Jie"
+credits="Age of Element team"
+description='''
+Statue addon for **Age of Element**.
+
+Capture any boss or mob, place it as a decorative statue, and customise the pedestal
+with any block. Statues keep the captured entity's look, and an optional data-driven
+effect API lets statues grant bonuses while placed.
+
+Features
+- Boss statues (captured from a boss) and creature statues (captured from any mob)
+- Custom pedestal: hold a block and right-click to cycle upper half / lower half / default
+- Iron ingot: right-click to enlarge, sneak + right-click to shrink
+- Gold ingot: right-click to raise, sneak + right-click to lower
+- Slim, safe NBT payloads (statues survive updates without bloating saves)
+
+\u96d5\u50cf\u9644\u52a0\u6a21\u7ec4\uff1aBoss \u96d5\u50cf / \u751f\u7269\u96d5\u50cf / \u81ea\u5b9a\u4e49\u5e95\u5ea7 / \u6570\u636e\u9a71\u52a8\u7684\u96d5\u50cf\u6548\u679c API\u3002
+'''
+
+[[dependencies.age_of_element_statue]]
+    modId="forge"
+    mandatory=true
+    versionRange="[47,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.age_of_element_statue]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.20.1,1.21)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.age_of_element_statue]]
+    modId="age_of_element"
+    mandatory=false
+    versionRange="[0.1.0,)"
+    ordering="AFTER"
+    side="BOTH"
