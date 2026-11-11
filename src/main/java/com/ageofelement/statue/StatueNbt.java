@@ -47,6 +47,8 @@ public final class StatueNbt {
             "Pos", "Motion", "Rotation", "UUID", "UUIDMost", "UUIDLeast",
             "Health", "AbsorptionAmount", "HurtTime", "HurtByTimestamp", "DeathTime",
             "FallDistance", "Fire", "Air", "PortalCooldown", "OnGround", "Invulnerable",
+            // 2026-11-11 用户：「状态不要带例如燃烧这种，怪物被火烧死之后就会有火焰燃烧特效」
+            "HasVisualFire", "RemainingFireTicks", "TicksFrozen", "IsInPowderSnow", "InPowderSnow",
             "PersistenceRequired", "CanPickUpLoot", "CanUpdate",
             "ArmorDropChances", "HandDropChances",
             "XpLevel", "XpP", "XpTotal", "XpSeed", "Score",
@@ -71,16 +73,27 @@ public final class StatueNbt {
      * 真正可能影响渲染的是下面这几个。</p>
      */
     private static final String[] KEEP_CAPS = {
-            "curios:", "yes_steve_model:", "goety:misc", "iceandfire:entity_data",
-            "aether:mob_accessory", "tacz:", "mowziesmobs:frozen",
-            "l2hostility:traits"          // 特性会改外观（如 fiery 带火焰），保留但要瘦身
+            "curios:", "yes_steve_model:", "goety:misc", "aether:mob_accessory", "tacz:",
+            // 2026-11-11 用户：「只丢其中的 frozen 字段、保留其它」
+            //   ⇒ `iceandfire:entity_data` 保留（龙的外观/阶段数据在里面），但把 frozen 字段剔掉；
+            //      `mowziesmobs:frozen` 整个就是冰冻状态，直接不保留。
+            "iceandfire:entity_data"
+    };
+
+    /** `iceandfire:entity_data` 里属于"冻结状态"的字段（只丢这些）。 */
+    private static final String[] ICE_FIRE_FROZEN_KEYS = {
+            "frozen", "frozenTicks", "isFrozen", "frost", "frostTicks"
     };
 
     /** {@code ForgeData} 里明确是"计数器/开关"的键前缀，直接丢。 */
     private static final String[] DROP_FORGE_DATA = {
             "flame_chase_artifacts:", "mine_fargo:", "more_mod_tetra:", "difficulty:",
             "DPTCanUpdateFixed", "elementalmobs:", "fga:", "fga.", "incontrol:",
-            "apoth.", "apoth_", "BielGGSoulProvoked", "quality_tools:", "attributeslib:"
+            "apoth.", "apoth_", "BielGGSoulProvoked", "quality_tools:", "attributeslib:",
+            // 2026-11-11：L2 等级/词条、Champions（含"强敌再续"）的等级/词缀
+            "l2hostility:", "champions:", "champions_", "champ:",
+            // 2026-11-11：元素反应的冻结/附着状态（frozen nuff、附着表）也不要
+            "elementalreactions:", "nuff:", "iceandfire:"
     };
 
     /** 单个 NBT 值的字符上限（装备/纹理由此足够，又不会失控）。 */
@@ -168,6 +181,17 @@ public final class StatueNbt {
             }
             if (id.startsWith("l2hostility:traits") && v instanceof CompoundTag traits) {
                 kept.put(id, pruneTraits(traits));
+                continue;
+            }
+            if (id.startsWith("iceandfire:entity_data") && v instanceof CompoundTag ifd) {
+                // 只剔除冻结相关字段，其它（species / gender / stage / variant…）保留
+                CompoundTag copy = ifd.copy();
+                for (String k : ICE_FIRE_FROZEN_KEYS) {
+                    copy.remove(k);
+                }
+                if (!copy.isEmpty()) {
+                    kept.put(id, copy);
+                }
                 continue;
             }
             kept.put(id, v.copy());

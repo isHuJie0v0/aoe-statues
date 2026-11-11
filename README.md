@@ -30,8 +30,8 @@ This mod adds **BOSS statues** and **creature statues** to Minecraft.
 | **Boss statue** | Capture a boss (data-driven capture rules); the statue keeps its look |
 | **Creature statue** | Capture any mob the same way |
 | **Custom pedestal** | Hold a block and right-click the statue: upper half → lower half → default |
-| **Scale** | Iron ingot: right-click to enlarge, **sneak + right-click** to shrink (`×0.20`–`×4.00`, step `0.05`) |
-| **Height** | Gold ingot: right-click to raise, **sneak + right-click** to lower (`−1.00`–`+2.00` blocks, step `0.05`) |
+| **Scale** | Iron ingot: right-click to enlarge, **sneak + right-click** to shrink (`×0.10`–`×10.00`, step `0.10`) |
+| **Height** | Gold ingot: right-click to raise, **sneak + right-click** to lower (`−32.00`–`+32.00` blocks, step `0.50`) |
 | **Data-driven effects** | Optional API: statues can grant attribute bonuses / behaviour while placed |
 | **Slim NBT** | Stored statue data is pruned and capped, so old statues never bloat a save |
 | **Original art** | All statue textures are drawn for this mod (32×32 pixel art, no borrowed sheets) |
@@ -87,8 +87,8 @@ from the official CurseForge project page and not re-hosted.
 |---|---|
 | Boss 雕像 / 生物雕像 | 按数据驱动的捕捉规则收服，外形保留 |
 | 自定义底座 | 手持方块右键：上半段 → 下半段 → 还原 |
-| 大小 | 铁锭右键变大，**潜行右键**变小（0.20×–4.00×，步长 0.05） |
-| 高度 | 金锭右键升高，**潜行右键**降低（−1.00–+2.00 格，步长 0.05） |
+| 大小 | 铁锭右键变大，**潜行右键**变小（0.10×–10.00×，步长 0.10） |
+| 高度 | 金锭右键升高，**潜行右键**降低（−32.00–+32.00 格，步长 0.50） |
 | 数据驱动效果 | 可选 API：雕像摆出后可提供属性/行为加成 |
 | 精简 NBT | 雕像数据会裁剪并限长，旧雕像不会撑大存档 |
 

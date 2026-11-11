@@ -30,6 +30,11 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
  */
 public final class StatueAdjustEvents {
 
+    /** 铁锭：每次调整的大小步长（2026-11-11 从 0.05 放大，配合 0.1~10 的新范围）。 */
+    private static final float SCALE_STEP = 0.1F;
+    /** 金锭：每次调整的高度步长（格）。 */
+    private static final float HEIGHT_STEP = 0.5F;
+
     private StatueAdjustEvents() {
     }
 
@@ -65,13 +70,13 @@ public final class StatueAdjustEvents {
             }
             var state = level.getBlockState(pos);
             if (iron) {
-                float step = player.isShiftKeyDown() ? -0.05F : 0.05F;
+                float step = player.isShiftKeyDown() ? -SCALE_STEP : SCALE_STEP;
                 statue.setScaleMul(statue.scaleMul() + step);
                 player.displayClientMessage(Component.literal(String.format(
                                 "[雕像] 大小 ×%.2f（铁锭右键变大 / 潜行右键变小）", statue.scaleMul()))
                         .withStyle(ChatFormatting.AQUA), true);
             } else {
-                float step = player.isShiftKeyDown() ? -0.05F : 0.05F;
+                float step = player.isShiftKeyDown() ? -HEIGHT_STEP : HEIGHT_STEP;
                 statue.setYOffset(statue.yOffset() + step);
                 player.displayClientMessage(Component.literal(String.format(
                                 "[雕像] 高度 %+.2f 格（金锭右键上升 / 潜行右键下降）", statue.yOffset()))

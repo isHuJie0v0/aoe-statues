@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.0.1 — 2026-11-11
+
+### Changed
+* **Wider adjustment ranges.** Scale is now `0.10×`–`10.00×` (step `0.10`) and height is
+  `−32`–`+32` blocks (step `0.50`), so very large models — including ones that end up
+  far above the statue block — can be lined up. Previously the range was `0.20×`–`4.00×`
+  and `−1`–`+2` blocks with `0.05` steps.
+
+### Fixed
+* Statues no longer keep **transient visual states**. Capture now drops vanilla fire /
+  frost state (`HasVisualFire`, `RemainingFireTicks`, `TicksFrozen`, snow flags), so a mob
+  that died while burning no longer produces a burning statue.
+* Statues no longer keep **L2 Hostility** levels and traits (`l2hostility:*` capabilities
+  and forge data are discarded — its `fiery` trait was one source of the burning look).
+* Statues no longer keep **Champions / "stronger rematch"-style** affixes
+  (`champions:*` / `champ:*`).
+* **Freeze state.** `mowziesmobs:frozen` is no longer captured, and in
+  `iceandfire:entity_data` only the frozen-related keys are removed — species, gender,
+  stage and variant data are preserved so Ice and Fire models still look right.
+
 ## 1.0.0 — 2026-11-07
 
 First public release on CurseForge.

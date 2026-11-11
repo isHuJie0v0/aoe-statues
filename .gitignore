@@ -24,3 +24,6 @@ run/
 # 本地参考图/临时文件
 bossstatue.png
 panda.png
+
+# 发布用截图（体积大，不入库）
+pictures/

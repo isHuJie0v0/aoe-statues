@@ -59,12 +59,14 @@ public class BossStatueBlockEntity extends BlockEntity {
     }
 
     public void setScaleMul(float v) {
-        scaleMul = Math.max(0.2F, Math.min(4.0F, v));
+        // 2026-11-11 用户：「可调节的高度和大小范围改大」——大小 0.1 ~ 10 倍
+        scaleMul = Math.max(0.1F, Math.min(10.0F, v));
         setChanged();
     }
 
     public void setYOffset(float v) {
-        yOffset = Math.max(-1.0F, Math.min(2.0F, v));
+        // 2026-11-11 用户：有些模型在天上，差十几个方块 ⇒ 高度 -32 ~ +32 格
+        yOffset = Math.max(-32.0F, Math.min(32.0F, v));
         setChanged();
     }
 
