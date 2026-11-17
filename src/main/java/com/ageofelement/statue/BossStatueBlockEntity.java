@@ -185,10 +185,15 @@ public class BossStatueBlockEntity extends BlockEntity {
         return out;
     }
 
-    /** 大模型（龙那类）会跨出方块，渲染剔除盒给大一点（原版的钩子在 BlockEntity 上）。 */
+    /**
+     * 大模型（龙那类）会跨出方块，渲染剔除盒给大一点（原版的钩子在 BlockEntity 上）。
+     *
+     * <p>2026-11-17：从 4 格放大到 **8 格**。原因是渲染器把 {@code shouldRenderOffScreen}
+     * 改回 {@code false} 以恢复视锥剔除，需要靠这个盒子覆盖大模型的真实范围，避免"看得到却被剔掉"。</p>
+     */
     @Override
     public net.minecraft.world.phys.AABB getRenderBoundingBox() {
-        return new net.minecraft.world.phys.AABB(worldPosition).inflate(4.0D);
+        return new net.minecraft.world.phys.AABB(worldPosition).inflate(8.0D);
     }
 
     @Override

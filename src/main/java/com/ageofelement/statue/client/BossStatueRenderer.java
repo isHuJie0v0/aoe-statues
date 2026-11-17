@@ -86,6 +86,10 @@ public class BossStatueRenderer implements BlockEntityRenderer<BossStatueBlockEn
             return;
         }
 
+        if (tooFar(be)) {
+            return;
+        }
+
         BlockState baseState = be.getBlockState();
         int baseMode = baseState.hasProperty(BossStatueBlock.BASE) ? baseState.getValue(BossStatueBlock.BASE) : 0;
         // 底座永远要画（2026-11-06：以前 id 为空/类型不存在会提前 return，导致底座完全不显示）
@@ -131,6 +135,15 @@ public class BossStatueRenderer implements BlockEntityRenderer<BossStatueBlockEn
         }
         Entity dummy = cached.dummy;
 
+        // GPU 烘焙的 key：实体 id + NBT 指纹（朝向由缓存内部按模型是否"吃 yaw"决定怎么处理）
+        String meshKey;
+        {
+            net.minecraft.nbt.CompoundTag nbt0 = be.getEntityNbt();
+            String fp = (nbt0 == null || nbt0.isEmpty()) ? "" : ("|" + nbt0.toString().hashCode());
+            meshKey = id + fp;
+        }
+
+
         BlockState state = be.getBlockState();
         float yaw = state.hasProperty(BossStatueBlock.FACING)
                 ? state.getValue(BossStatueBlock.FACING).toYRot()
@@ -150,7 +163,11 @@ public class BossStatueRenderer implements BlockEntityRenderer<BossStatueBlockEn
             // 状态摆不好也继续画（下面有兜底量尺）
         }
 
-        float[] box = cached.box;
+        // 2026-11-17：优先用**真实几何包围盒**（抓取顶点时统计的），
+        // 它才是"画出来占多大空间"；GeckoLib 的 visible_bounds 只是相对 pivot 的声明值，
+        // 遇到 block_factorys_bosses 那种渲染器自带位移的模型就会偏高十几格。
+        float[] geoBox = StatueGpuCache.boundsFor(dummy, meshKey, yaw);
+        float[] box = geoBox != null ? geoBox : cached.box;
         float size = Math.max(box[0], Math.max(box[1], box[2]));
         if (size <= 0.01F) {
             size = Math.max(0.1F, Math.max(dummy.getBbWidth(), dummy.getBbHeight()));
@@ -164,11 +181,20 @@ public class BossStatueRenderer implements BlockEntityRenderer<BossStatueBlockEn
             // 玩家手动调的大小/高度（2026-11-07：铁锭调大小、金锭调高度）
             float manualScale = Math.max(0.2F, Math.min(4.0F, be.scaleMul()));
             float manualY = Math.max(-1.0F, Math.min(2.0F, be.yOffset()));
+            // 2026-11-17 关键修复：**先缩放、再按模型空间中心平移**。
+            // 旧代码是"先平移、后缩放"——平移量走的是世界单位，却被模型空间的数值直接拿来用，
+            // 于是大模型（沙虫 69 格 ⇒ scale≈0.03）实际被平移了 ~30 倍距离 ⇒ 雕像飞到天上十几格。
+            // 正确顺序下：p' = T + (p - center) * s，底边落在基座顶面。
+            float totalScale = scale * manualScale;
             pose.translate(0.5D, 0.5D + manualY, 0.5D);
+            pose.scale(totalScale, totalScale, totalScale);
             pose.translate(-box[3], -(box[4] - box[1] * 0.5F), -box[5]);
-            pose.scale(scale * manualScale, scale * manualScale, scale * manualScale);
-            mc.getEntityRenderDispatcher().render(dummy, 0.0D, 0.0D, 0.0D, yaw, 0.0F,
-                    pose, buffers, LightTexture.FULL_BRIGHT);
+            // 2026-11-17：GPU 烘焙（顶点只上传一次，之后每帧只换模型矩阵 + draw call）。
+            // 失败/不支持 ⇒ 自动回退到直渲，行为与之前一致。
+            if (!StatueGpuCache.render(dummy, meshKey, yaw, pose, LightTexture.FULL_BRIGHT)) {
+                mc.getEntityRenderDispatcher().render(dummy, 0.0D, 0.0D, 0.0D, yaw, 0.0F,
+                        pose, buffers, LightTexture.FULL_BRIGHT);
+            }
         } catch (Throwable t) {
             StatueMod.LOGGER.debug("[Boss 雕像] {} 渲染失败：{}", id, t.toString());
         } finally {
@@ -441,6 +467,22 @@ public class BossStatueRenderer implements BlockEntityRenderer<BossStatueBlockEn
 
     @Override
     public boolean shouldRenderOffScreen(BossStatueBlockEntity be) {
-        return true;                                   // 大模型（龙）跨方块，别被剔除
+        // 2026-11-17：**必须返回 false**。
+        // 之前为了"大模型别被剔除"返回 true，等于**关掉了视锥剔除** ——
+        // 背对/侧对时雕像照样每帧渲染，几十座就把 120 FPS 打到 70。
+        // 现在靠 BossStatueBlockEntity#getRenderBoundingBox 给足空间（膨胀 8 格），
+        // 大模型跨出方块也不会被误剔。
+        return false;
+    }
+
+    /** 远处（>96 格）的雕像连 1 像素都不到，直接不画（不是限制数量，纯距离剔除）。 */
+    private static boolean tooFar(BossStatueBlockEntity be) {
+        var player = net.minecraft.client.Minecraft.getInstance().player;
+        if (player == null) {
+            return false;
+        }
+        double dx = player.getX() - (be.getBlockPos().getX() + 0.5D);
+        double dz = player.getZ() - (be.getBlockPos().getZ() + 0.5D);
+        return dx * dx + dz * dz > 96.0D * 96.0D;
     }
 }
